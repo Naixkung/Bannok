@@ -1,0 +1,22 @@
+services:
+  bannokapi:
+    build:
+      context: ./bannokamin_api          # ← ชั้นนอก (มี patcenter.sln)
+      dockerfile: bannokamin_api/Dockerfile   # ← ลงไปหา Dockerfile
+    container_name: bannokcontainer
+    ports:
+      - "8088:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    restart: always
+
+  bannokweb: 
+    image: php:8.2-apache
+    container_name: bannok_web
+    ports:
+      - "8089:80"
+    volumes:
+      - ./bannokweb:/var/www/html # ← phpweb ชี้ที่เก็บ file ใน container >> /var/www/html
+    depends_on:
+      - bannokapi # ให้ service stockaptsimg-service ขึ้นก่อน
+    restart: always
